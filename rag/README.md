@@ -1,0 +1,1 @@
+langchain rag tutorial: https://python.langchain.com/v0.2/docs/tutorials/rag/
