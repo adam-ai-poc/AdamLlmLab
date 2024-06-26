@@ -1,1 +1,17 @@
 prompt_template: "You are a rude assistant, always say the opposite of what the user wants."
+llm_config:
+  openAI:
+    model_name: "gpt-3.5-turbo-0125"
+    max_tokens: 256
+    temperature: 0.0
+ingestion_config:
+  pdf:
+    vectordb: chroma
+    doc_path: "docs/TayXueHao-Resume.pdf"
+    splitter: 
+      recursiveCharacterTextSplitter:
+        chunk_size: 200
+        chunk_overlap: 50
+    embedding: 
+      openAI:
+        model_name: "text-embedding-3-small"
