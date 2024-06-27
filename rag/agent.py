@@ -48,10 +48,11 @@ OpenAI backend service
 '''
 class OpenaiAgent(Agent):
 
-    openai_config: dict = LLM_CONFIG["openAI"]
-    model_name: str = openai_config["model_name"]
-    max_tokens: str = openai_config["max_tokens"]
-    temperature: str = openai_config["temperature"]
+    llm_config = LLM_CONFIG
 
-    def __init__(self, api_key=OPENAI_API_KEY, model_name=model_name, max_tokens=max_tokens, temperature=temperature, debug=False, **kwargs):
-        super().__init__(api_key, model_name, max_tokens, temperature, debug, callback = get_openai_callback())
+    def __init__(self, llm_config, debug=False):
+        self.openai_config: dict = llm_config["openAI"]
+        self.model_name: str = self.openai_config["model_name"]
+        self.max_tokens: str = self.openai_config["max_tokens"]
+        self.temperature: str = self.openai_config["temperature"]
+        super().__init__(os.environ.get("OPENAI_API_KEY"), self.model_name, self.max_tokens, self.temperature, debug, callback = get_openai_callback())
