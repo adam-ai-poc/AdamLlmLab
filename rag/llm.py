@@ -11,7 +11,7 @@ LLM_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"),
 '''
 Base Agemt class
 '''
-class Agent():
+class LLM():
     def __init__(self, api_key, model_name, max_tokens, temperature, debug, callback=None):
         self.api_key = api_key
         self.model_name = model_name
@@ -46,7 +46,7 @@ class Agent():
 '''
 OpenAI backend service 
 '''
-class OpenaiAgent(Agent):
+class OpenaiLLM(LLM):
 
     llm_config = LLM_CONFIG
 
