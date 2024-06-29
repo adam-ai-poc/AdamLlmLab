@@ -9,3 +9,9 @@ ingestion_config:
       recursiveCharacterTextSplitter:
         chunk_size: 500
         chunk_overlap: 0
+retrieval_config:
+  vectorstore:
+    search_type: "similarity_score_threshold"
+    search_config:
+      k: 3
+      score_threshold: 0.3

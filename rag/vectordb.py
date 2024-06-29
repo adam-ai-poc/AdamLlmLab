@@ -1,7 +1,11 @@
 import os
-
+from typing import Iterable, List, Any, Optional, Type, TypeVar
+from langchain_core.documents import Document
+from langchain_core.embeddings import Embeddings
+VST = TypeVar("VST", bound="VectorStore")
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
+from langchain_core.vectorstores import VectorStore
 from .utils import read_config
 # Graph
 # Qdrant
@@ -11,6 +15,9 @@ EMBEDDING = {
     "openAI": OpenAIEmbeddings
 }
 
+'''
+Base Vector Database class 
+'''
 class VectorDB:
     def __init__(self, vectordb, embedding_model, debug):
         self.vectordb=vectordb
@@ -26,9 +33,17 @@ class VectorDB:
             print("==========================================")
 
     def store(self, chunks):
-        self.vectordb = self.vectordb.from_documents(chunks, self.embedding_model)
+        self.vectorstore = self.vectordb.from_documents(chunks, self.embedding_model)
 
+    def as_retriever(self, search_type, search_kwargs):
+        self.search_type = search_type
+        self.search_kwargs = search_kwargs
+        self.retriever = self.vectordb.as_retriever(search_type=self.search_type, search_kwargs=self.search_kwargs)
+        return self.retriever
 
+'''
+ChromaDB class 
+'''
 class ChromaDB(VectorDB):
     # Default
     vectordb_cfg = VECTORDB_CONFIG["chroma"]

@@ -32,9 +32,10 @@ class Ingestor:
             print("Document:", doc_path)
             print("==========================================")
 
-
-
     def __call__(self, db):
+        self.ingest(db)
+
+    def ingest(self, db):
         """Ingest data into the vector database."""
         self.docs = self.loader.load()
         print("Documents:", self.docs) if self.debug else None
@@ -42,22 +43,11 @@ class Ingestor:
         self.chunks = self.splitter.split_documents(self.docs)
         print("Number of chunks: ", len(self.chunks)) if self.debug else None
         print("Chunks: ", self.chunks) if self.debug else None
-
         # Vectordb should be passed by reference
         db.store(chunks=self.chunks)
         db.num_chunks = len(self.chunks)
-        # self.vectorstore = db.vectordb.from_documents(documents=self.chunks, embedding=self.embedding_model)
         print(f"{db.num_chunks} Chunks saved into {db.vectordb_name} using embedding model: {db.embedding_model}.")
-        # return self.vectorstore
-    
-    # def get(self, key: str):
-    #     """Generic getter method to return components."""
-    #     if hasattr(self, key):
-    #         return getattr(self, key)
-    #     else:
-    #         raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{key}'")
 
-    
 '''
 PDF Ingestion class 
 '''

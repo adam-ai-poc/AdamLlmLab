@@ -11,5 +11,7 @@ ingestion_config:
         chunk_overlap: 0
 retrieval_config:
   vectorstore:
-    n: 10 # Embedding
-    k: 3
+    search_type: "mmr"
+    search_config:
+      k: 3
+      score_threshold: 0.5
