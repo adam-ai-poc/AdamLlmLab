@@ -10,7 +10,8 @@ from .utils import read_config
 # Graph
 # Qdrant
 
-VECTORDB_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"), "vectordb_config")
+VECTORDB_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"), "ragchain")["vectordb_config"]
+
 EMBEDDING = {
     "openAI": OpenAIEmbeddings
 }
@@ -60,3 +61,6 @@ class ChromaDB(VectorDB):
 
         self.debug=debug
         super().__init__(vectordb=self.vectordb, embedding_model=self.embedding_model, debug=self.debug)
+
+    def chunk_count(self):
+        return self.vectordb._collection.count()

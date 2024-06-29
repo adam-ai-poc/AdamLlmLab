@@ -1,17 +1,20 @@
-vectordb_config: 
-  chroma:
-    embedding: 
-      openAI:
-        model_name: "text-embedding-3-small"
-ingestion_config:
-  pdf:
-    splitter: 
+ragchain:
+  vectordb_config: 
+    chroma:
+      embedding: 
+        openAI:
+          model_name: "text-embedding-3-small"
+  ingestion_config:
+    loader: 
+      pdf:
+        extract_images: False
+    chunker: 
       recursiveCharacterTextSplitter:
-        chunk_size: 500
+        chunk_size: 1000
         chunk_overlap: 0
-retrieval_config:
-  vectorstore:
-    search_type: "similarity_score_threshold"
-    search_config:
-      k: 3
-      score_threshold: 0.3
+  retrieval_config:
+    vectorstore:
+      search_type: "mmr"
+      search_config:
+        k: 3
+        score_threshold: 0.5

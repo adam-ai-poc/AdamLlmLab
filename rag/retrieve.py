@@ -14,7 +14,7 @@ from langchain.retrievers.parent_document_retriever import ParentDocumentRetriev
 #     TimeWeightedVectorStoreRetriever,
 # )
 
-RETRIEVAL_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"), "retrieval_config")
+RETRIEVAL_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"), "ragchain")["retrieval_config"]
 
 '''
 Base Retriever class 
