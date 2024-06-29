@@ -1,11 +1,6 @@
 import os
-from typing import Iterable, List, Any, Optional, Type, TypeVar
-from langchain_core.documents import Document
-from langchain_core.embeddings import Embeddings
-VST = TypeVar("VST", bound="VectorStore")
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
-from langchain_core.vectorstores import VectorStore
 from .utils import read_config
 # Graph
 # Qdrant

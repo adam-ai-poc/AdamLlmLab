@@ -1,12 +1,7 @@
 import os
 
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.document_loaders import WebBaseLoader
-from langchain_chroma import Chroma
-from langchain_openai import OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from .utils import read_config
-from typing import Any, Optional, List
 
 CHUNKER_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"), "ragchain")["ingestion_config"]["chunker"]
 
