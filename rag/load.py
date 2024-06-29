@@ -22,7 +22,7 @@ class Loader:
         self.doc_paths = []
         self.debug = debug
         if self.debug:
-            print("Loader: ", self.loader.__class__.__name__)
+            print("Loader: ", loader.__name__)
 
     def __call__(self, doc_path:Union[str, list]):
         return self.load(doc_path, self.debug)

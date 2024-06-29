@@ -10,7 +10,7 @@ CHUNKER = {
 }
 
 '''
-Base Ingestion class 
+Base Chunking class 
 '''
 class Chunker:
     def __init__(self, chunker, debug):
@@ -19,11 +19,11 @@ class Chunker:
         if self.debug:
             print("chunker:", chunker.__class__.__name__)
 
-    def __call__(self, documents, db):
+    def __call__(self, documents, vectorstore):
         self.documents = documents
-        self.ingest(self.documents, db, self.debug)
+        self.chunk(self.documents, vectorstore, self.debug)
 
-    def ingest(self, documents, db, debug=True):
+    def chunk(self, documents, vectordb, debug=True):
         """Ingest data into the vector database."""
         print("Documents:", documents) if debug else None
 
@@ -31,12 +31,12 @@ class Chunker:
         print("Number of chunks: ", len(self.chunks)) if debug else None
         print("Chunks: ", self.chunks) if debug else None
         # Vectordb should be passed by reference
-        db.store(chunks=self.chunks)
-        db.num_chunks = db.num_chunks + len(self.chunks)
-        print(f"{db.num_chunks} Chunks saved into {db.vectordb_name} using embedding model: {db.embedding_model}.")
+        vectordb.store(chunks=self.chunks)
+        vectordb.num_chunks = vectordb.num_chunks + len(self.chunks)
+        print(f"{vectordb.num_chunks} Chunks saved into {vectordb.vectorstore_name} using embedding model: {vectordb.embedding_model}.")
 
 '''
-PDF Ingestion class 
+PDF Chunking class 
 '''
 class RecursiveChunker(Chunker):
 

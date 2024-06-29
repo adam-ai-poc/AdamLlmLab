@@ -15,21 +15,21 @@ EMBEDDING = {
 Base Vector Database class 
 '''
 class VectorDB:
-    def __init__(self, vectordb, embedding_model, debug):
-        self.vectordb=vectordb
-        self.vectordb_name = self.vectordb.__class__.__name__
+    def __init__(self, vectorstore, embedding_model, debug):
+        self.vectorstore=vectorstore
+        self.vectorstore_name = self.vectorstore.__class__.__name__
         self.embedding_model = embedding_model
         self.debug = debug
         if self.debug:
             print("==========================================")
             print("Vector database configurations")
             print("==========================================")
-            print("Vectordb:", self.vectordb_name)
+            print("Vector Database:", self.vectorstore_name)
             print("Embedding model:", embedding_model.model)
             print("==========================================")
 
     def store(self, chunks):
-        self.vectorstore = self.vectordb.from_documents(chunks, self.embedding_model)
+        self.vectorstore = self.vectorstore.from_documents(chunks, self.embedding_model)
 
     def as_retriever(self, search_type, search_kwargs):
         self.search_type = search_type
@@ -46,7 +46,7 @@ class ChromaDB(VectorDB):
 
     def __init__(self, vectordb_cfg: dict=vectordb_cfg, debug=False):
         # VectorDB
-        self.vectordb = Chroma()
+        self.vectorstore = Chroma()
         self.num_chunks = 0
 
         # Embedding
@@ -55,7 +55,7 @@ class ChromaDB(VectorDB):
         self.embedding_model = EMBEDDING[self.embedding_backend](model=self.embedding_model_name)
 
         self.debug=debug
-        super().__init__(vectordb=self.vectordb, embedding_model=self.embedding_model, debug=self.debug)
+        super().__init__(vectorstore=self.vectorstore, embedding_model=self.embedding_model, debug=self.debug)
 
     def chunk_count(self):
-        return self.vectordb._collection.count()
+        return self.vectorstore._collection.count()
