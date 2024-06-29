@@ -3,7 +3,7 @@ import json
 
 from langchain_openai import ChatOpenAI
 from langchain.callbacks import get_openai_callback
-from .utils import read_config
+from rag.utils import read_config
 
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 LLM_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"), "llm_config")
@@ -22,7 +22,7 @@ class LLM():
         self.llm = ChatOpenAI(model=model_name, max_tokens=max_tokens, temperature=temperature)
 
     def __call__(self, query):
-        
+        """Get response from LLM."""
         # If debug is turned on, print metadata as well as pricing
         if self.debug:
             print(f"Query: {query}")
@@ -42,15 +42,23 @@ class LLM():
             response = self.llm.invoke(query)
         
         return response.content
+    
+    def get(self, key: str):
+        """Generic getter method to return components."""
+        if hasattr(self, key):
+            return getattr(self, key)
+        else:
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{key}'")
 
 '''
-OpenAI backend service 
+OpenAI backend class 
 '''
 class OpenaiLLM(LLM):
 
+    # Default
     llm_config = LLM_CONFIG
 
-    def __init__(self, llm_config, debug=False):
+    def __init__(self, llm_config:dict=llm_config, debug=False):
         self.openai_config: dict = llm_config["openAI"]
         self.model_name: str = self.openai_config["model_name"]
         self.max_tokens: str = self.openai_config["max_tokens"]

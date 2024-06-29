@@ -7,9 +7,5 @@ ingestion_config:
   pdf:
     splitter: 
       recursiveCharacterTextSplitter:
-        chunk_size: 1000
+        chunk_size: 500
         chunk_overlap: 0
-retrieval_config:
-  vectorstore:
-    n: 10 # Embedding
-    k: 3
