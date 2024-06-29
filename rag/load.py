@@ -57,7 +57,7 @@ class PDFLoader(Loader):
 
     def __init__(self, loader_cfg:dict=loader_cfg, debug=False):
         self.loader_type = "pdf"
-        self.loader_cfg = loader_cfg
+        self.loader_cfg = loader_cfg[self.loader_type]
         self.loader = LOADER[self.loader_type]
         self.debug = debug
 
