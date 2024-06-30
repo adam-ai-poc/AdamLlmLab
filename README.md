@@ -43,10 +43,16 @@ The primary goal of this repository is to learn, explore and experiment with var
     
     - Replace the key with the actual key which you generated from OpenAI's web portal.
 
-5. Test the terminal-based rag app `main.py`.
+5. Test the terminal-based rag app `app/rag_app.py`.
 
     - After activating your conda environment, type the command in the terminal in the base directory to bring up the terminal-based chat interface.
 
-    `python main.py`
+    `python app/rag_app.py`
 
     - Use the `--help` flag to see all the flags available for the script.
+
+6. To run the streamlit-based webapp, type this command in your terminal at the base directory:
+
+    `run.bat`
+
+    - Your webapp should be hosed at localhost:8501 (default). To stop the service, type Ctrl+C in the terminal.

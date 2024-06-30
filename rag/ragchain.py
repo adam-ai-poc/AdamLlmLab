@@ -69,12 +69,11 @@ class RagChain:
             import langchain
             langchain.debug = True
 
-        self.ragchain = (
-            {"context": self.retriever.retriever | self.format_docs, "input": RunnablePassthrough()}
-            | self.system_prompt
-            | self.llm
+        self.ragchain = {"context": self.retriever.retriever | self.format_docs, "input": RunnablePassthrough()} \
+            | self.system_prompt \
+            | self.llm \
             | StrOutputParser()
-        )
+        
         return self.ragchain
 
     def clear_vectorstore():

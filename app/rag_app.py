@@ -2,7 +2,8 @@ import argparse
 import os
 import warnings
 warnings.filterwarnings("ignore")
-
+import sys
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardir))
 from rag.utils import read_config, benchmark
 from rag.ragchain import RagChain
 from model.prompt import zero_shot_prompt
@@ -19,7 +20,7 @@ def parse_args():
     return parser.parse_args()
 
 @benchmark
-def load_chain(args):
+def load_chain():
     args = parse_args()
 
     RAG_CONFIG = read_config(args.config, "ragchain")
@@ -46,7 +47,7 @@ def load_chain(args):
 def main():
     args = parse_args()
     # Initialize chain
-    ragchain = load_chain(args)
+    ragchain = load_chain()
 
     # Chat interface
     print("==========================================")
