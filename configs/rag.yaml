@@ -3,7 +3,8 @@ ragchain:
     chroma:
       embedding: 
         openAI:
-          model_name: "text-embedding-3-small"
+          model: "text-embedding-3-small"
+      persist_directory: "./db/chroma"
   ingestion_config:
     loader: 
       pdf:

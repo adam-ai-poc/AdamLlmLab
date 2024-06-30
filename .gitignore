@@ -1,6 +1,9 @@
 # Environment Variables
 .env
 
+# Vectordb
+db/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
