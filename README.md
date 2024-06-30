@@ -19,7 +19,7 @@ The primary goal of this repository is to learn, explore and experiment with var
 4. Basic understanding of LLMs and their applications
 
 #### Setup 
-1. OpenAI api key: "sk-xxx"
+1. Generate openai api key: "sk-xxx"
 2. Anaconda/Miniconda installed
 
 ### Environment Setup
@@ -37,16 +37,16 @@ The primary goal of this repository is to learn, explore and experiment with var
 
 4. Setup Openai Api Key:
 
-    Create a file in the base directory named `.env` and set the environment variable:
+    - Create a file in the base directory named `.env` and set the environment variable:
 
     `OPENIAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxx"`
     
-    Replace the key with the actual key which you generated from OpenAI's web portal.
+    - Replace the key with the actual key which you generated from OpenAI's web portal.
 
 5. Test the terminal-based rag app `main.py`.
 
-    After activating your conda environment, type the command in the terminal in the base directory to bring up the terminal-based chat interface.
+    - After activating your conda environment, type the command in the terminal in the base directory to bring up the terminal-based chat interface.
 
     `python main.py`
 
-    Use the `--help` flag to see all the flags available for the script.
+    - Use the `--help` flag to see all the flags available for the script.
