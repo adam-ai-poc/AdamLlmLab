@@ -1,11 +1,12 @@
 import os
 import json
-
+from dotenv import load_dotenv
+load_dotenv()
 from langchain_openai import ChatOpenAI
 from langchain.callbacks import get_openai_callback
 from rag.utils import read_config
 
-OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 LLM_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"), "llm_config")
 
 '''
