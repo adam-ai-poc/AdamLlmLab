@@ -7,7 +7,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from .vectordb import *
 from .load import *
 from .chunk import *
-
+from .retrieve import *
 
 ADAM_VECTORDB = {
     "chroma": ChromaDB
@@ -19,4 +19,8 @@ ADAM_LOADER = {
 
 ADAM_CHUNKER = {
     "recursiveCharacterTextSplitter": RecursiveChunker
+}
+
+ADAM_RETRIEVER = {
+    "vectorstore": VectorStoreRetriever
 }

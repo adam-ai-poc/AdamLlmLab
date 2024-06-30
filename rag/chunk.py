@@ -25,15 +25,13 @@ class Chunker:
 
     def chunk(self, documents, vectordb, debug=True):
         """Ingest data into the vector database."""
-        print("Documents:", documents) if debug else None
-
         self.chunks = self.chunker.split_documents(documents)
         print("Number of chunks: ", len(self.chunks)) if debug else None
         print("Chunks: ", self.chunks) if debug else None
         # Vectordb should be passed by reference
         vectordb.store(chunks=self.chunks)
         vectordb.num_chunks = vectordb.num_chunks + len(self.chunks)
-        print(f"{vectordb.num_chunks} Chunks saved into {vectordb.vectorstore_name} using embedding model: {vectordb.embedding_model}.")
+        print(f"{vectordb.num_chunks} Chunks saved into {vectordb.vectorstore_name} using embedding model: {vectordb.embedding_model.model}.") if debug else None
 
 '''
 PDF Chunking class 

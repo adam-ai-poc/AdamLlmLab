@@ -50,7 +50,9 @@ class VectorStoreRetriever(Retriever):
         self.retriever = self.vectordb.vectorstore.as_retriever(search_type=self.search_type, search_kwargs=self.search_cfg)
 
     def __call__(self, query):
-        return self.retrieve(query)
+        return self.retrieve(query, debug=self.debug)
 
-    def retrieve(self, query):
-        return self.retriever.invoke(query)
+    def retrieve(self, query, debug=False):
+        contexts = self.retriever.invoke(query)
+        print("Contexts: ", contexts) if debug else None
+        return contexts

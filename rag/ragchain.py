@@ -23,7 +23,7 @@ class RagChain:
         self.system_prompt = system_prompt
         self.llm = llm
         if ragchain_cfg:
-            print("...Ragchain config found. Creating or recreating rag piplines...")
+            print("...Ragchain config found. Creating or recreating rag piplines...") if debug else None
             self.create_pipelines(ragchain_cfg=ragchain_cfg, debug=debug)
         else:
             self.vectordb = vectordb
@@ -65,6 +65,10 @@ class RagChain:
         else:
             self.retriever = VectorStoreRetriever(self.vectordb, retrieval_cfg=self.retrieval_cfg[next(iter(self.retrieval_cfg))], debug=debug)
 
+        if debug:
+            import langchain
+            langchain.debug = True
+
         self.ragchain = (
             {"context": self.retriever.retriever | self.format_docs, "input": RunnablePassthrough()}
             | self.system_prompt
@@ -72,7 +76,7 @@ class RagChain:
             | StrOutputParser()
         )
         return self.ragchain
-    
+
     def clear_vectorstore():
         pass
 

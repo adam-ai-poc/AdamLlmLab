@@ -10,11 +10,11 @@ ragchain:
         extract_images: False
     chunker: 
       recursiveCharacterTextSplitter:
-        chunk_size: 1000
+        chunk_size: 200
         chunk_overlap: 0
   retrieval_config:
     vectorstore:
-      search_type: "mmr"
+      search_type: "similarity_score_threshold"
       search_config:
-        k: 3
+        # k: 3
         score_threshold: 0.0
