@@ -6,7 +6,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from rag_app import load_chain
 
-st.set_page_config(page_title="AdamLab: RAG", page_icon="A")
+st.set_page_config(page_title="AdamLab: RAG", page_icon="app/images/A.png")
 st.title("AdamLab: Rag App")
 
 @st.cache_resource()
