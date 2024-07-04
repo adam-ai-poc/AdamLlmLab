@@ -51,7 +51,7 @@ def main():
 
     # Chat interface
     print("==========================================")
-    print("Welcome to AdamLLM's rag interface! Chat with your RagChain now! Type 'quit() to exit.")
+    print("Welcome to AdamLab's rag interface! Chat with your RagChain now! Type 'quit() to exit.")
     print("==========================================")
     print(f"LLM: {ragchain.invoke('Hi')}")
     while True:
