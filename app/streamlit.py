@@ -35,7 +35,7 @@ def initialize():
 
 # Response
 def get_response(ragchain, query):
-    return ragchain.ragchain.stream(query)
+    return ragchain.stream(query)
 
 def main():
     ragchain = initialize()
@@ -63,7 +63,8 @@ def main():
         with st.chat_message("AdamBot"):
             # Streaming
             # ai_response = st.write_stream(get_stream_response(user_query, st.session_state.chat_history))
-            ai_response = st.markdown(get_response(ragchain, user_query))
+            ai_response = st.write_stream(get_response(ragchain, user_query))
+            # ai_response = st.markdown(get_response(ragchain, user_query))
         
         st.session_state.chat_history.append(AIMessage(ai_response)) 
 
