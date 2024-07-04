@@ -25,11 +25,11 @@ The primary goal of this repository is to learn, explore and experiment with var
 ### Environment Setup
 1. Create a conda environment:
 
-    `conda create -n adamllm python=3.11`
+    `conda create -n adamlab python=3.11`
 
 2. Activate the conda environment:
 
-    `conda activate adamllm`
+    `conda activate adamlab`
 
 3. Install dependencies. In the base directory:
 
