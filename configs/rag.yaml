@@ -1,21 +1,6 @@
-ragchain:
-  vectordb_config: 
-    chroma:
-      embedding: 
-        openAI:
-          model: "text-embedding-3-small"
-      persist_directory: "./db/chroma"
-  ingestion_config:
-    loader: 
-      pdf:
-        extract_images: False
-    chunker: 
-      recursiveCharacterTextSplitter:
-        chunk_size: 200
-        chunk_overlap: 0
-  retrieval_config:
-    vectorstore:
-      search_type: "similarity_score_threshold"
-      search_config:
-        # k: 3
-        score_threshold: 0.0
+retrieval_config:
+  vectorstore:
+    search_type: "similarity_score_threshold"
+    search_config:
+      # k: 3
+      score_threshold: 0.0

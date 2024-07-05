@@ -9,8 +9,6 @@ from model.prompt import *
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 
-RAGCHAIN_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"), "ragchain")
-
 '''
 Chain class to link the rag pipelines
 '''

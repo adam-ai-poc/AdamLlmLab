@@ -1,0 +1,13 @@
+vectordb:
+  chroma:
+    embedding_model:
+      openAI:
+        model: "text-embedding-3-small"
+    persist_directory: "./db/chroma"
+loader:
+  pdf:
+    extract_images: False
+chunker:
+  recursiveCharacterTextSplitter:
+    chunk_size: 1000
+    chunk_overlap: 0
