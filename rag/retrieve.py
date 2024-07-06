@@ -43,14 +43,14 @@ class VectorStoreRetriever(Retriever):
             self.vectordb = self._init_component_from_dict(ADAM_VECTORDB, vectordb)
         else:
             self.vectordb = vectordb
-        print(f"Vectordb: {self.vectordb} Initialized.")
+        print(f"Vectordb: {self.vectordb} Initialized.")  if self.debug else None
 
         self.search_type = search_type
         self.search_kwargs = search_kwargs
 
         print(self.get_config_string()) if self.debug else None
         self.set_retriever_params(search_type=self.search_type, search_kwargs=self.search_kwargs)
-        print(f"Vector Store Retriever: {self.retriever} created")
+        print(f"Vector Store Retriever: {self.retriever} created")  if self.debug else None
 
     # Can be called to change parameters without reinitializing vectordbs
     def set_retriever_params(self, search_type, search_kwargs, **kwargs):
