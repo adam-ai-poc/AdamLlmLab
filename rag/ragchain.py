@@ -3,34 +3,72 @@ from . import ADAM_RETRIEVER
 from model import ADAM_LLM, ADAM_PROMPT
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
+from langchain_core.messages import HumanMessage, AIMessage
 
 '''
 Chain class to link the rag pipelines
 '''
 class RagChain:
 
-    def __init__(self, retriever=None, system_prompt=None, llm=None, debug=False, **kwargs):
+    def __init__(self, num_history=3, retriever=None, system_prompt=None, llm=None, debug=False, **kwargs):
+
+        self.chat_history = []
+        self.num_history = num_history
         self.debug = debug
 
         # Retriever initialization
         self.retriever = self.set_component(component=retriever, ADAM_COMPONENT=ADAM_RETRIEVER)
-        print(f"Retriever: {self.retriever} Initialized.")
+        print(f"Retriever: {self.retriever} Initialized.") if self.debug else None
 
         self.set_system_prompt(system_prompt=system_prompt)
-        print("System prompt initialized")
+        print("System prompt initialized") if self.debug else None
 
         self.llm = self.set_component(component=llm, ADAM_COMPONENT=ADAM_LLM)
-        print(f"LLM: {self.llm.model_name} Initialized.")
+        print(f"LLM: {self.llm.model_name} Initialized.") if self.debug else None
 
         print(self.get_config_string()) if self.debug else None
 
         self.chain = self.create_chain(debug=self.debug)
 
     def __call__(self, query):
-        return self.chain.invoke(query)
+        recent_history = self.chat_history[-(self.num_history*2):]
+        print("Recent history: ", recent_history) if self.debug else None
+        response = self.chain.invoke(          
+            {"context": self.get_contexts_from_query(query), \
+            "question": query, \
+            "chat_history": recent_history}
+            )
+        self.update_chat_history(query, response)
+        return response
+    
+    def get_contexts_from_query(self, query):
+        contexts = self.retriever.retrieve(query)
+        formatted_contexts = self.format_docs(contexts)
+        print("Contexts: ", formatted_contexts) if self.debug else None
+        return formatted_contexts
+    
+    def update_chat_history(self, query, response):
+        human_query = HumanMessage(query)
+        ai_response = AIMessage(response)
+        self.chat_history.append(human_query)
+        self.chat_history.append(ai_response)
     
     def stream(self, query):
-        return self.chain.stream(query)
+        recent_history = self.chat_history[-(self.num_history*2):]
+        print("Recent history: ", recent_history) if self.debug else None
+        
+        streamer = self.chain.stream(          
+            {"context": self.get_contexts_from_query(query), \
+            "question": query, \
+            "chat_history": recent_history}
+            )
+        
+        # Stream response using yield
+        response = ""
+        for chunk in streamer:
+            response += chunk
+            yield chunk
+        self.update_chat_history(query, response)
 
     def get_config_string(self):
         return f"""
@@ -48,10 +86,11 @@ class RagChain:
             import langchain
             langchain.debug = True
 
-        chain = ({"context": self.retriever.retriever | self.format_docs, "input": RunnablePassthrough()} \
-            | self.system_prompt \
+        chain = (
+            self.system_prompt \
             | self.llm.model \
-            | StrOutputParser())
+            | StrOutputParser()
+            )
         
         return chain
 
