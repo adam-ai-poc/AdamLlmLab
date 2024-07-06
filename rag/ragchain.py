@@ -28,6 +28,9 @@ class RagChain:
 
     def __call__(self, query):
         return self.chain.invoke(query)
+    
+    def stream(self, query):
+        return self.chain.stream(query)
 
     def get_config_string(self):
         return f"""
@@ -45,10 +48,10 @@ class RagChain:
             import langchain
             langchain.debug = True
 
-        chain = {"context": self.retriever.retriever | self.format_docs, "input": RunnablePassthrough()} \
+        chain = ({"context": self.retriever.retriever | self.format_docs, "input": RunnablePassthrough()} \
             | self.system_prompt \
-            | self.llm \
-            | StrOutputParser()
+            | self.llm.model \
+            | StrOutputParser())
         
         return chain
 

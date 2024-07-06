@@ -22,9 +22,7 @@ def parse_args():
 
 @benchmark
 def load_chain(config, debug):
-    print(config, debug)
     RAG_CONFIG = read_all_config(config)
-    print(RAG_CONFIG)
     ragchain = RagChain(**RAG_CONFIG, debug=debug)
 
     return ragchain

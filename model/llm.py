@@ -20,11 +20,11 @@ class LLM():
         self.temperature = temperature
         self.debug = debug
         self.callback = callback
-        self.llm = ChatOpenAI(model=model_name, max_tokens=max_tokens, temperature=temperature)
+        self.model = ChatOpenAI(model=model_name, max_tokens=max_tokens, temperature=temperature)
 
     def __call__(self, query):
         """Get response from LLM."""
-        response = self.llm.invoke(query)
+        response = self.model.invoke(query)
         
         return response
     
