@@ -14,7 +14,7 @@ class Loader:
         self.documents = []
         self.doc_paths = []
         self.debug = debug
-        print(self.print_config()) if self.debug else None
+        print(self.get_config_string()) if self.debug else None
 
     def __call__(self, doc_path:Union[str, list]):
         return self.load(doc_path, self.debug)
@@ -41,7 +41,7 @@ class Loader:
         self.doc_paths.append(doc_path)
 
     
-    def print_config(self):
+    def get_config_string(self):
         return f"""
             ==========================================
             Loader configurations

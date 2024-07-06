@@ -1,6 +1,19 @@
-retrieval_config:
+retriever:
   vectorstore:
+    vectordb:
+      chroma:
+        embedding_model:
+          openAI:
+            model: "text-embedding-3-small"
+        persist_directory: "./db/chroma"
     search_type: "similarity_score_threshold"
-    search_config:
+    search_kwargs:
       # k: 3
-      score_threshold: 0.0
+      score_threshold: 0.5
+llm:
+  openai:
+    model_name: "gpt-3.5-turbo-0125"
+    max_tokens: 512
+    temperature: 0.0
+system_prompt:
+  prompt_type: zero-shot

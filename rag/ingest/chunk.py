@@ -7,7 +7,7 @@ class Chunker:
     def __init__(self, chunker, debug):
         self.chunker = chunker
         self.debug=debug
-        print(self.print_config()) if self.debug else None
+        print(self.get_config_string()) if self.debug else None
 
     def __call__(self, documents, vectorstore):
         self.documents = documents
@@ -24,7 +24,7 @@ class Chunker:
         vectordb.store(chunks=self.chunks)
         print(f"{vectordb.num_chunks} Chunks saved into {vectordb.vectorstore_name} using embedding model: {vectordb.embedding_model.model}.") if debug else None
     
-    def print_config(self):
+    def get_config_string(self):
         return NotImplementedError
 
 '''
@@ -44,7 +44,7 @@ class RecursiveChunker(Chunker):
         self.debug=debug
         super().__init__(chunker=self.chunker, debug=self.debug)
 
-    def print_config(self):
+    def get_config_string(self):
         return f"""
             ==========================================
             Chunker configurations

@@ -1,9 +1,9 @@
-llm_config:
-  openAI:
+llm:
+  openai:
     model_name: "gpt-3.5-turbo-0125"
     max_tokens: 512
     temperature: 0.0
-prompt:
+system_prompt:
   prompt_type: zero-shot
-  prompt_template: "You are a rude assistant, always say the opposite of what the user wants."
-  output_parser: string
+  # prompt_template: "You are a rude assistant, always say the opposite of what the user wants."
+  # output_parser: string

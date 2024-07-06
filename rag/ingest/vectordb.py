@@ -18,7 +18,7 @@ class VectorDB:
         self.embedding_model = embedding_model
         self.persist_directory = persist_directory
         self.debug = debug
-        print(self.print_config()) if self.debug else None
+        print(self.get_config_string()) if self.debug else None
 
     def store(self, chunks):
         self.num_chunks = self.num_chunks + len(chunks)
@@ -30,26 +30,17 @@ class VectorDB:
         self.retriever = self.vectorstore.as_retriever(search_type=self.search_type, search_kwargs=self.search_kwargs)
         return self.retriever
     
-    # # Load embeddings from disk
-    # def load(self, persist_directory):
-    #     try:
-    #         # self.vectorstore(persist_directory=persist_directory, embedding_function=self.embedding_model)
-    #         self.vectorstore._persist_directory = persist_directory
-    #         self.vectorstore._embedding_function = self.embedding_model
-    #     except Exception as e:
-    #         print(e)
-    
     # Used when embedding model passed using kwargs
     def _init_embedding_model_from_dict(self, embedding_cfg:dict):
         backend = next(iter(embedding_cfg))
         backend_cfg = embedding_cfg[backend]
         return EMBEDDING[backend](**backend_cfg)
     
-    def print_config(self):
+    def get_config_string(self):
         return f"""
             ==========================================
             Vector database configurations
-            ==========================================
+            ------------------------------------------
             Vector Database: {self.vectorstore_name}
             Embedding model: {self.embedding_model.model}
             ==========================================

@@ -7,7 +7,7 @@ from langchain.callbacks import get_openai_callback
 from rag.utils import read_config
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-LLM_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"), "llm_config")
+LLM_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"), "llm")
 
 '''
 Base Agemt class
@@ -57,11 +57,14 @@ OpenAI backend class
 class OpenaiLLM(LLM):
 
     # Default
-    llm_config = LLM_CONFIG
+    llm_config = LLM_CONFIG["openai"]
+    model_name: str = llm_config["model_name"]
+    max_tokens: str = llm_config["max_tokens"]
+    temperature: str = llm_config["temperature"]
 
-    def __init__(self, llm_config:dict=llm_config, debug=False):
-        self.openai_config: dict = llm_config["openAI"]
-        self.model_name: str = self.openai_config["model_name"]
-        self.max_tokens: str = self.openai_config["max_tokens"]
-        self.temperature: str = self.openai_config["temperature"]
+    def __init__(self, model_name=model_name, max_tokens=max_tokens, temperature=temperature, debug=False):
+        self.model_name=model_name
+        self.max_tokens=max_tokens
+        self.temperature=temperature
+        self.debug=debug
         super().__init__(os.environ.get("OPENAI_API_KEY"), self.model_name, self.max_tokens, self.temperature, debug, callback = get_openai_callback())

@@ -8,30 +8,28 @@ class AdamIngest:
         self.debug = debug
 
         # Vector db initialization
-        if isinstance(vectordb, dict):
-            self.vectordb = self._init_component_from_dict(ADAM_VECTORDB, vectordb)
-        else:
-            self.vectordb = vectordb
+        self.vectordb = self.set_component(component=vectordb, ADAM_COMPONENT=ADAM_VECTORDB)
         print(f"Vectordb: {self.vectordb} Initialized.")
 
         # Loader initialization
-        if isinstance(loader, dict):
-            self.loader = self._init_component_from_dict(ADAM_LOADER, loader)
-        else:
-            self.loader = loader
+        self.loader = self.set_component(component=loader, ADAM_COMPONENT=ADAM_LOADER)
         print(f"Loader: {self.loader} Initialized.")
 
         # Chunker initialization
-        if isinstance(chunker, dict):
-            self.chunker = self._init_component_from_dict(ADAM_CHUNKER, chunker)
-        else:
-            self.chunker = chunker
+        self.chunker = self.set_component(component=chunker, ADAM_COMPONENT=ADAM_CHUNKER)
         print(f"Chunker: {self.chunker} Initialized.")
 
-    def _init_component_from_dict(self, COMPONENT, component_cfg:dict):
+    def set_component(self, component, ADAM_COMPONENT=None):
+        if isinstance(component, dict):
+            return self._init_component_from_dict(ADAM_COMPONENT, component)
+        else:
+            return component
+
+
+    def _init_component_from_dict(self, ADAM_COMPONENT, component_cfg:dict):
         component = next(iter(component_cfg))
         component_parameters_cfg = component_cfg[component]
-        return COMPONENT[component](**component_parameters_cfg, debug = self.debug)
+        return ADAM_COMPONENT[component](**component_parameters_cfg, debug = self.debug)
 
 
     def ingest(self, doc_path:Union[str, list]):
