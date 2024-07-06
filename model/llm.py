@@ -24,25 +24,9 @@ class LLM():
 
     def __call__(self, query):
         """Get response from LLM."""
-        # If debug is turned on, print metadata as well as pricing
-        if self.debug:
-            print(f"Query: {query}")
-
-            print(f"Usage metadata: ")
-            if self.callback:
-                with self.callback as callback:
-                    response = self.llm.invoke(query)
-                    print(callback)
-            else:
-                print(json.dumps(response.usage_metadata, indent=1))
-
-            print(f"Response metadata: ")
-            print(json.dumps(response.response_metadata, indent=1))
-
-        else:
-            response = self.llm.invoke(query)
+        response = self.llm.invoke(query)
         
-        return response.content
+        return response
     
     def get(self, key: str):
         """Generic getter method to return components."""
