@@ -1,6 +1,4 @@
-import os
-
-from.utils import read_config
+from .ingest import ADAM_VECTORDB
 from langchain.retrievers.ensemble import EnsembleRetriever
 from langchain.retrievers.parent_document_retriever import ParentDocumentRetriever
 # Unsupported
@@ -14,8 +12,6 @@ from langchain.retrievers.parent_document_retriever import ParentDocumentRetriev
 #     TimeWeightedVectorStoreRetriever,
 # )
 
-RETRIEVAL_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"), "ragchain")["retrieval_config"]
-
 '''
 Base Retriever class 
 '''
@@ -26,28 +22,41 @@ class Retriever:
     def __call__(self):
         pass
 
+    def get_config_string(self):
+        pass
+
+    def _init_component_from_dict(self, ADAM_COMPONENT, component_cfg:dict):
+        component = next(iter(component_cfg))
+        component_parameters_cfg = component_cfg[component]
+        return ADAM_COMPONENT[component](**component_parameters_cfg, debug = self.debug)
+
 '''
 Vector Store Retriever class 
 '''
 class VectorStoreRetriever(Retriever):
 
-    retrieval_cfg = RETRIEVAL_CONFIG["vectorstore"]
+    def __init__(self, vectordb, search_type, search_kwargs, debug=False, **kwargs):
 
-    def __init__(self, vectordb, retrieval_cfg: dict=retrieval_cfg, debug=False):
-        self.vectordb = vectordb
-        self.retrieval_cfg = retrieval_cfg
-        self.search_type = self.retrieval_cfg["search_type"]
-        self.search_cfg = self.retrieval_cfg["search_config"]
         self.debug = debug
-        if self.debug:
-            print("==========================================")
-            print("Retrieval configurations")
-            print("==========================================")
-            print("Retrieval type: ", __class__.__name__)
-            print("Search type: ", self.search_type)
-            print("Search config: ", self.search_cfg)
-            print("==========================================")
-        self.retriever = self.vectordb.vectorstore.as_retriever(search_type=self.search_type, search_kwargs=self.search_cfg)
+        # Vector db initialization
+        if isinstance(vectordb, dict):
+            self.vectordb = self._init_component_from_dict(ADAM_VECTORDB, vectordb)
+        else:
+            self.vectordb = vectordb
+        print(f"Vectordb: {self.vectordb} Initialized.")
+
+        self.search_type = search_type
+        self.search_kwargs = search_kwargs
+
+        print(self.get_config_string()) if self.debug else None
+        self.set_retriever_params(search_type=self.search_type, search_kwargs=self.search_kwargs)
+        print(f"Vector Store Retriever: {self.retriever} created")
+
+    # Can be called to change parameters without reinitializing vectordbs
+    def set_retriever_params(self, search_type, search_kwargs, **kwargs):
+        self.search_type = search_type
+        self.search_kwargs = search_kwargs
+        self.retriever = self.vectordb.vectorstore.as_retriever(search_type=self.search_type, search_kwargs=self.search_kwargs)
 
     def __call__(self, query):
         return self.retrieve(query, debug=self.debug)
@@ -56,3 +65,14 @@ class VectorStoreRetriever(Retriever):
         contexts = self.retriever.invoke(query)
         print("Contexts: ", contexts) if debug else None
         return contexts
+    
+    def get_config_string(self):
+        return f"""
+            ==========================================
+            Retrieval configurations
+            ------------------------------------------
+            Retrieval type: {__class__.__name__}
+            Search type: {self.search_type}
+            Search config: {self.search_kwargs}
+            ==========================================]
+        """

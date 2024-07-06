@@ -1,84 +1,78 @@
-from . import *
-from .vectordb import *
-from .load import *
-from .chunk import *
 from .retrieve import *
-from model.llm import *
-from model.prompt import *
-
+from . import ADAM_RETRIEVER
+from model import ADAM_LLM, ADAM_PROMPT
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
-
-RAGCHAIN_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"), "ragchain")
 
 '''
 Chain class to link the rag pipelines
 '''
 class RagChain:
 
-    ragchain_cfg = RAGCHAIN_CONFIG
-
-    def __init__(self, vectordb=None, loader=None, chunker=None, retriever=None, system_prompt=None, llm=None, ragchain_cfg:dict={}, debug=False):
+    def __init__(self, retriever=None, system_prompt=None, llm=None, debug=False, **kwargs):
         self.debug = debug
-        self.system_prompt = system_prompt
-        self.llm = llm
-        if ragchain_cfg:
-            print("...Ragchain config found. Creating or recreating rag piplines...") if debug else None
-            self.create_pipelines(ragchain_cfg=ragchain_cfg, debug=debug)
-        else:
-            self.vectordb = vectordb
-            self.loader = loader
-            self.chunker = chunker
-            self.rertiever = retriever
-            self.system_prompt = system_prompt
-            self.llm = llm
 
-    def create_pipelines(self, ragchain_cfg:dict=ragchain_cfg, debug=False):
-        self.vectordb_cfg = ragchain_cfg["vectordb_config"]
-        self.loader_cfg = ragchain_cfg["ingestion_config"]["loader"]
-        self.chunker_cfg = ragchain_cfg["ingestion_config"]["chunker"]
-        self.retrieval_cfg = ragchain_cfg["retrieval_config"]
+        # Retriever initialization
+        self.retriever = self.set_component(component=retriever, ADAM_COMPONENT=ADAM_RETRIEVER)
+        print(f"Retriever: {self.retriever} Initialized.")
 
-        if debug:
-            print("==========================================")
-            print("Ragchain configurations")
-            print("==========================================")
-            print("Vector database: ", self.vectordb_cfg)
-            print("Loader         : ", self.loader_cfg)
-            print("Chunker        : ", self.chunker_cfg)
-            print("Retrieval      : ", self.retrieval_cfg[next(iter(self.retrieval_cfg))])
-            print("Prompt         : ", self.system_prompt)
-            print("LLM            : ", self.llm.model_name)
-            print("==========================================")
+        self.set_system_prompt(system_prompt=system_prompt)
+        print("System prompt initialized")
 
-        self.vectordb = ADAM_VECTORDB[next(iter(self.vectordb_cfg))](self.vectordb_cfg, debug=debug)
-        self.loader = ADAM_LOADER[next(iter(self.loader_cfg))](self.loader_cfg, debug=debug)
-        self.chunker = ADAM_CHUNKER[next(iter(self.chunker_cfg))](self.chunker_cfg, debug=debug)
+        self.llm = self.set_component(component=llm, ADAM_COMPONENT=ADAM_LLM)
+        print(f"LLM: {self.llm.model_name} Initialized.")
 
-    def chain(self, doc_path:Union[str, list], retriever=None, debug=False):
-        self.documents = self.loader.load(doc_path=doc_path, debug=debug)
-        self.chunks = self.chunker.chunk(documents=self.documents, vectordb=self.vectordb, debug=debug)
-        
-        # if next(iter(self.retrieval_cfg)) == "vectorstore":
-        if retriever:
-            self.retriever = retriever
-        else:
-            self.retriever = VectorStoreRetriever(self.vectordb, retrieval_cfg=self.retrieval_cfg[next(iter(self.retrieval_cfg))], debug=debug)
+        print(self.get_config_string()) if self.debug else None
 
-        if debug:
+        self.chain = self.create_chain(debug=self.debug)
+
+    def __call__(self, query):
+        return self.chain.invoke(query)
+    
+    def stream(self, query):
+        return self.chain.stream(query)
+
+    def get_config_string(self):
+        return f"""
+            ==========================================
+            Ragchain configurations
+            ------------------------------------------
+            Retriever: {self.retriever}
+            System prompt: {self.system_prompt}
+            LLM: {self.llm.model_name}
+            ==========================================
+        """
+
+    def create_chain(self, debug=False):
+        if debug==True:
             import langchain
             langchain.debug = True
 
-        self.ragchain = {"context": self.retriever.retriever | self.format_docs, "input": RunnablePassthrough()} \
+        chain = ({"context": self.retriever.retriever | self.format_docs, "input": RunnablePassthrough()} \
             | self.system_prompt \
-            | self.llm \
-            | StrOutputParser()
+            | self.llm.model \
+            | StrOutputParser())
         
-        return self.ragchain
-
-    def clear_vectorstore():
-        pass
+        return chain
 
     # Preprocessing
     def format_docs(self, docs):
         return "\n\n".join(doc.page_content for doc in docs)
+    
+    def set_component(self, component, ADAM_COMPONENT=None):
+        if isinstance(component, dict):
+            return self._init_component_from_dict(ADAM_COMPONENT, component)
+        else:
+            return component
+    
+    def set_system_prompt(self, system_prompt):
+        if isinstance(system_prompt, dict):
+            prompt_type = system_prompt["prompt_type"]
+            self.system_prompt = ADAM_PROMPT[prompt_type]
+        else:
+            self.system_prompt = system_prompt
+
+    def _init_component_from_dict(self, COMPONENT, component_cfg:dict):
+        component = next(iter(component_cfg))
+        component_parameters_cfg = component_cfg[component]
+        return COMPONENT[component](**component_parameters_cfg, debug = self.debug)

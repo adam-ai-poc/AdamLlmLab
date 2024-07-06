@@ -7,7 +7,7 @@ from langchain.callbacks import get_openai_callback
 from rag.utils import read_config
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-LLM_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"), "llm_config")
+LLM_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"), "llm")
 
 '''
 Base Agemt class
@@ -20,29 +20,13 @@ class LLM():
         self.temperature = temperature
         self.debug = debug
         self.callback = callback
-        self.llm = ChatOpenAI(model=model_name, max_tokens=max_tokens, temperature=temperature)
+        self.model = ChatOpenAI(model=model_name, max_tokens=max_tokens, temperature=temperature)
 
     def __call__(self, query):
         """Get response from LLM."""
-        # If debug is turned on, print metadata as well as pricing
-        if self.debug:
-            print(f"Query: {query}")
-
-            print(f"Usage metadata: ")
-            if self.callback:
-                with self.callback as callback:
-                    response = self.llm.invoke(query)
-                    print(callback)
-            else:
-                print(json.dumps(response.usage_metadata, indent=1))
-
-            print(f"Response metadata: ")
-            print(json.dumps(response.response_metadata, indent=1))
-
-        else:
-            response = self.llm.invoke(query)
+        response = self.model.invoke(query)
         
-        return response.content
+        return response
     
     def get(self, key: str):
         """Generic getter method to return components."""
@@ -57,11 +41,14 @@ OpenAI backend class
 class OpenaiLLM(LLM):
 
     # Default
-    llm_config = LLM_CONFIG
+    llm_config = LLM_CONFIG["openai"]
+    model_name: str = llm_config["model_name"]
+    max_tokens: str = llm_config["max_tokens"]
+    temperature: str = llm_config["temperature"]
 
-    def __init__(self, llm_config:dict=llm_config, debug=False):
-        self.openai_config: dict = llm_config["openAI"]
-        self.model_name: str = self.openai_config["model_name"]
-        self.max_tokens: str = self.openai_config["max_tokens"]
-        self.temperature: str = self.openai_config["temperature"]
+    def __init__(self, model_name=model_name, max_tokens=max_tokens, temperature=temperature, debug=False):
+        self.model_name=model_name
+        self.max_tokens=max_tokens
+        self.temperature=temperature
+        self.debug=debug
         super().__init__(os.environ.get("OPENAI_API_KEY"), self.model_name, self.max_tokens, self.temperature, debug, callback = get_openai_callback())
