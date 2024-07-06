@@ -12,7 +12,7 @@ class RagChain:
 
     def __init__(self, num_history=3, retriever=None, system_prompt=None, llm=None, debug=False, **kwargs):
 
-        self.conversation_history = []
+        self.chat_history = []
         self.num_history = num_history
         self.debug = debug
 
@@ -31,7 +31,7 @@ class RagChain:
         self.chain = self.create_chain(debug=self.debug)
 
     def __call__(self, query):
-        recent_history = self.conversation_history[-(self.num_history*2):]
+        recent_history = self.chat_history[-(self.num_history*2):]
         print("Recent history: ", recent_history) if self.debug else None
         response = self.chain.invoke(          
             {"context": self.get_contexts_from_query(query), \
@@ -50,11 +50,11 @@ class RagChain:
     def update_chat_history(self, query, response):
         human_query = HumanMessage(query)
         ai_response = AIMessage(response)
-        self.conversation_history.append(human_query)
-        self.conversation_history.append(ai_response)
+        self.chat_history.append(human_query)
+        self.chat_history.append(ai_response)
     
     def stream(self, query):
-        recent_history = self.conversation_history[-(self.num_history*2):]
+        recent_history = self.chat_history[-(self.num_history*2):]
         print("Recent history: ", recent_history) if self.debug else None
         
         streamer = self.chain.stream(          
