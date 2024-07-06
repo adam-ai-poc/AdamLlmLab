@@ -13,7 +13,7 @@ class Chunker:
         self.documents = documents
         self.chunk_and_store(self.documents, vectorstore, self.debug)
 
-    def chunk_and_store(self, documents, vectordb, debug=True):
+    def chunk_and_store(self, documents, vectordb, debug=False):
         """Ingest data into the vector database."""
         self.chunks = self.chunker.split_documents(documents)
         if debug: 
@@ -22,7 +22,6 @@ class Chunker:
             print("Chunks: ", self.chunks)
         # Vectordb should be passed by reference
         vectordb.store(chunks=self.chunks)
-        print(f"{vectordb.num_chunks} Chunks saved into {vectordb.vectorstore_name} using embedding model: {vectordb.embedding_model.model}.") if debug else None
     
     def get_config_string(self):
         return NotImplementedError

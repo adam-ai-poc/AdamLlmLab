@@ -21,8 +21,11 @@ class VectorDB:
         print(self.get_config_string()) if self.debug else None
 
     def store(self, chunks):
-        self.num_chunks = self.num_chunks + len(chunks)
         self.vectorstore = self.vectorstore.from_documents(documents=chunks, embedding=self.embedding_model, persist_directory=self.persist_directory)
+        print(f"{len(chunks)} Chunks saved into {self.vectorstore_name} \
+              using embedding model: {self.embedding_model.model}.")
+        print(f"Vectorstore now has {self.get_chunk_count()} chunks.") 
+        self.num_chunks = self.get_chunk_count()
 
     def as_retriever(self, search_type, search_kwargs):
         self.search_type = search_type

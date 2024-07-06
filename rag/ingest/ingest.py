@@ -34,4 +34,4 @@ class AdamIngest:
 
     def ingest(self, doc_path:Union[str, list]):
         documents = self.loader.load(doc_path)
-        self.chunker.chunk_and_store(documents, self.vectordb)
+        self.chunker.chunk_and_store(documents, self.vectordb, debug=self.debug)
