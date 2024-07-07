@@ -24,8 +24,7 @@ class VectorDB:
         self.vectorstore = self.vectorstore.from_documents(documents=chunks, embedding=self.embedding_model, persist_directory=self.persist_directory)
         print(f"{len(chunks)} Chunks saved into {self.vectorstore_name} \
               using embedding model: {self.embedding_model.model}.")
-        print(f"Vectorstore now has {self.get_chunk_count()} chunks.") 
-        self.num_chunks = self.get_chunk_count()
+        print(f"Vectorstore now has {self.chunk_count} chunks.") 
 
     def as_retriever(self, search_type, search_kwargs):
         self.search_type = search_type
@@ -48,8 +47,8 @@ class VectorDB:
             Embedding model: {self.embedding_model.model}
             ==========================================
         """
-
-    def get_chunk_count(self):
+    @property
+    def chunk_count(self):
         return self.vectorstore._collection.count()
     
     def get_collection_name(self):
@@ -66,7 +65,6 @@ class ChromaDB(VectorDB):
     # If using kwargs, should pass in fields after the "chroma" key
     def __init__(self, embedding_model=embedding_model, persist_directory=persist_directory, debug=False, **kwargs):
 
-        self.num_chunks = 0
         self.persist_directory = persist_directory
 
         # Parse embedding config

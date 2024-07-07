@@ -13,14 +13,14 @@ LLM_CONFIG = read_config(os.path.join(os.path.dirname(__file__), "config.yaml"),
 Base Agemt class
 '''
 class LLM():
-    def __init__(self, api_key, model_name, max_tokens, temperature, debug, callback=None):
-        self.api_key = api_key
+    def __init__(self, model, model_name, max_tokens, temperature, debug, callback=None):
+        self.model = model
         self.model_name = model_name
         self.max_tokens = max_tokens
         self.temperature = temperature
         self.debug = debug
         self.callback = callback
-        self.model = ChatOpenAI(model=model_name, max_tokens=max_tokens, temperature=temperature)
+        
 
     def __call__(self, query):
         """Get response from LLM."""
@@ -50,5 +50,6 @@ class OpenaiLLM(LLM):
         self.model_name=model_name
         self.max_tokens=max_tokens
         self.temperature=temperature
+        self.model = ChatOpenAI(model=model_name, max_tokens=max_tokens, temperature=temperature)
         self.debug=debug
-        super().__init__(os.environ.get("OPENAI_API_KEY"), self.model_name, self.max_tokens, self.temperature, debug, callback = get_openai_callback())
+        super().__init__(self.model, self.model_name, self.max_tokens, self.temperature, debug, callback = get_openai_callback())
