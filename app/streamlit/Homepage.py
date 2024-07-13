@@ -2,12 +2,7 @@ import streamlit as st
 from style import all_styles
 from st_click_detector import click_detector
 from streamlit_extras.switch_page_button import switch_page
-
-def set_page_config():
-    st.set_page_config(page_title="AdamLab", page_icon="🥼")
-
-def set_title():
-    st.title("Main Page", anchor=False)
+from utils import set_page_config, set_title
 
 def set_sidebar():
     st.sidebar.markdown("Pages")
@@ -32,8 +27,8 @@ def display_options():
 
 
 
-set_page_config()
+set_page_config("AdamLab")
 all_styles()
 set_sidebar()
-set_title()
+set_title("Main Page")
 display_options()

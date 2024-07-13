@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from langchain_openai import ChatOpenAI
 from langchain.callbacks import get_openai_callback
+from langchain_core.runnables import ConfigurableField
 from rag.utils import read_config
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -20,13 +21,21 @@ class LLM():
         self.temperature = temperature
         self.debug = debug
         self.callback = callback
-        
+        self.llm_configurations = self.set_llm_configurations()
 
     def __call__(self, query):
         """Get response from LLM."""
-        response = self.model.invoke(query)
+        self.set_llm_configurations()
+        response = self.model.with_config(configurable=self.llm_configurations).invoke(query)
         
         return response
+    
+    def set_llm_configurations(self):
+        self.llm_configurations = {
+            "llm_temperature": self.temperature,
+            "llm_max_tokens": self.max_tokens,
+        }
+        print("LLM Configurations: ", self.llm_configurations)
     
     def get(self, key: str):
         """Generic getter method to return components."""
@@ -50,6 +59,17 @@ class OpenaiLLM(LLM):
         self.model_name=model_name
         self.max_tokens=max_tokens
         self.temperature=temperature
-        self.model = ChatOpenAI(model=model_name, max_tokens=max_tokens, temperature=temperature)
+        self.model = ChatOpenAI(model=model_name, max_tokens=max_tokens, temperature=temperature).configurable_fields(
+            temperature=ConfigurableField(
+                id="llm_temperature",
+                name="LLM Temperature",
+                description="The temperature of the LLM",
+            ),
+            max_tokens=ConfigurableField(
+                id="llm_max_tokens",
+                name="LLM Max Tokens",
+                description="The Max Tokens of the LLM",
+            ),
+        )
         self.debug=debug
         super().__init__(self.model, self.model_name, self.max_tokens, self.temperature, debug, callback = get_openai_callback())

@@ -26,6 +26,8 @@ class RagChain:
         self.llm = self.set_component(component=llm, ADAM_COMPONENT=ADAM_LLM)
         print(f"LLM: {self.llm.model_name} Initialized.") if self.debug else None
 
+        self.llm_configurations = self.set_llm_configurations()
+
         print(self.get_config_string()) if self.debug else None
 
         self.chain = self.create_chain(debug=self.debug)
@@ -33,13 +35,21 @@ class RagChain:
     def __call__(self, query):
         recent_history = self.chat_history[-(self.num_history*2):]
         print("Recent history: ", recent_history) if self.debug else None
-        response = self.chain.invoke(          
+        self.set_llm_configurations()
+        response = self.chain.with_config(configurable=self.llm_configurations).invoke(          
             {"context": self.get_contexts_from_query(query), \
             "question": query, \
             "chat_history": recent_history}
             )
         self.update_chat_history(query, response)
         return response
+    
+    def set_llm_configurations(self):
+        self.llm_configurations = {
+            "llm_temperature": self.llm.temperature,
+            "llm_max_tokens": self.llm.max_tokens,
+        }
+        print("Ragchain LLM Configurations: ", self.llm_configurations)
     
     def get_contexts_from_query(self, query):
         contexts = self.retriever.retrieve(query)
@@ -56,8 +66,8 @@ class RagChain:
     def stream(self, query):
         recent_history = self.chat_history[-(self.num_history*2):]
         print("Recent history: ", recent_history) if self.debug else None
-        
-        streamer = self.chain.stream(          
+        self.set_llm_configurations()
+        streamer = self.chain.with_config(configurable=self.llm_configurations).stream(          
             {"context": self.get_contexts_from_query(query), \
             "question": query, \
             "chat_history": recent_history}
