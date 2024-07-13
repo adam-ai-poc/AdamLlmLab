@@ -34,3 +34,26 @@ def benchmark(func):
         print(f"--- Function '{func.__name__}' took {end_time - start_time:.4f} seconds to execute. ---")
         return result
     return wrapper
+
+# Recursively search for the persist_directory key
+def find_persist_directory(config):
+    if isinstance(config, dict):
+        for key, value in config.items():
+            if key == "persist_directory":
+                return value
+            elif isinstance(value, dict):
+                result = find_persist_directory(value)
+                if result:
+                    return result
+    return None
+
+# Check if persist_directory exists
+def check_persist_directory(config):
+    persist_directory = find_persist_directory(config)
+    if persist_directory:
+        if os.path.exists(persist_directory):
+            return True
+        else:
+            return False
+    else:
+        return False
