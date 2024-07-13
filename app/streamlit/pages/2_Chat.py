@@ -1,7 +1,8 @@
 import os
 import sys
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(SCRIPT_DIR, '../'))
+BASE_DIR = os.path.join(SCRIPT_DIR, "..", "..", "..")
+sys.path.insert(0, BASE_DIR)
 
 import streamlit as st
 from dotenv import load_dotenv
@@ -12,13 +13,13 @@ from langchain_core.output_parsers import StrOutputParser
 from rag.utils import read_all_config
 from rag.ragchain import RagChain
 
-st.set_page_config(page_title="AdamLab: RAG", page_icon="app/images/A.png")
-st.title("AdamLab: Rag App")
+st.set_page_config(page_title="Chat Playground", page_icon="app/images/A.png")
+st.title("Chat Playground")
 
 @st.cache_resource()
 def initialize():
     load_dotenv()
-    config_file = os.path.join(SCRIPT_DIR, "../configs/rag.yaml")
+    config_file = os.path.join(BASE_DIR, "configs", "rag.yaml")
     print("Initializing ragchain")
     RAG_CONFIG = read_all_config(config_file)
     ragchain = RagChain(**RAG_CONFIG)
@@ -29,7 +30,7 @@ def initialize():
 def get_response(ragchain, query):
     return ragchain.stream(query)
 
-def main():
+def chat():
     ragchain = initialize()
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
@@ -59,4 +60,4 @@ def main():
         st.session_state.chat_history.append(AIMessage(ai_response)) 
 
 if __name__ == "__main__":
-    main()
+    chat()

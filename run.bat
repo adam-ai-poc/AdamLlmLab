@@ -1,1 +1,1 @@
-streamlit run app/streamlit.py
+streamlit run app/streamlit/Homepage.py
