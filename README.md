@@ -19,6 +19,9 @@ The primary goal of this repository is to learn, explore and experiment with var
 2. Object Oriented Programming
 3. Git
 4. Basic understanding of LLMs and their applications
+(optional)
+5. Frontend - react.js, css, html
+6. Devops - github actions, cicd
 
 #### Setup 
 1. Generate openai api key: "sk-xxx"
