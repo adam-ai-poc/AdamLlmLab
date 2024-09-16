@@ -1,4 +1,4 @@
-# Adam's Lab
+# Adam's Llm Lab
 Welcome to Adam's Lab, a repository designed to streamline the AI engineer's experience in experimenting with and exploring the capabilities and applications of Large Language Models (LLMs). This repository serves as a foundation for Proof-of-Concept (POC) and pathfinding initiatives aimed at leveraging LLM techniques to advance understanding in this domain. The classes, functions, and variables used in this codebase are designed to be as generic as possible, facilitating easy adaptation to a wide range of specific use cases. While primarily leveraging the Langchain ecosystem, this repository is also designed to integrate seamlessly with other ecosystems. It provides a versatile framework for experimenting with and implementing LLM techniques and concepts.
 
 
